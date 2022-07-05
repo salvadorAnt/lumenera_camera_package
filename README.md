@@ -20,7 +20,7 @@ For each camera, it produced one topic with the name `/lumenera_camera_package/i
 You can subscribe to topics and use the published images.
 
 For example, it the following image, I connected to lumenera cameras to my PC and I executed the ROS node. It published two topic, one for each camera. The frame rate for each one of them is near 26.
-![Lumenera Cameras ROS package](imgs/demo.png?raw=true)
+![Lumenera Cameras ROS package](/imgs/demo.png?raw=true)
 
 # NOTICE
 I tested it on Ubuntu 18.04 with ROS Melodic. I have not tested it on other environments. Maybe you will be required to do some adjustments.
