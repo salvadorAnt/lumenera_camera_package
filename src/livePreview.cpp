@@ -44,9 +44,18 @@ using std::endl;
 
 int main( int argc, char** argv )
 {
-
+  // ROS node name
   ros::init(argc, argv, "lumenera_camera_node");
-	ros::NodeHandle nh;
+	
+  // ros node handle
+  ros::NodeHandle nh;
+
+  // ros rate Hz
+  ros::Rate rate(90);
+
+  // print start of node
+  ROS_INFO("Node: [lumenera_camera_node] has been started.");
+
 
   BYTE *imagePtr;
   int frameSize;
@@ -58,7 +67,7 @@ int main( int argc, char** argv )
 
   int numCameras = LucamNumCameras();
   
-  cout << "Found " << numCameras << " camera" << std::string((1 == numCameras) ? "" : "s") << endl;
+  ROS_INFO_STREAM("Found " << numCameras << " camera" << std::string((1 == numCameras) ? "" : "s") << endl);
 
   if (0 == numCameras) {
     return 0;
@@ -70,13 +79,13 @@ int main( int argc, char** argv )
 
   // Initialize each camera
   for(size_t i=0; i < cameras.size(); i++) {
-    cout << "Initializing Camera #" << i+1 << endl;
+    ROS_INFO_STREAM("Initializing Camera #" << i+1 << endl);
     cameras[i].init(i+1, displaySobelImage ? "Sobel" : "");
   }
 
   // Start streaming on each camera
   for(size_t i=0; i < cameras.size(); i++) {
-    cout << "Starting streaming on Camera #" << i+1 << endl;
+    ROS_INFO_STREAM("Starting streaming on Camera #" << i+1 << endl);
     cameras[i].startStreaming();
   }
 
@@ -87,9 +96,9 @@ int main( int argc, char** argv )
   const int delta  = 0;
   const int ddepth = CV_16S;
 
-  cout << "Starting previews.\nPress 'q' or Control-c to quit." << endl;
+  ROS_INFO_STREAM("Starting previews.\nPress 'q' or Control-c to quit." << endl);
 
-  while (true) {
+  while (ros::ok()) {
     // Grab and display a single image from each camera
     for (size_t i = 0; i < cameras.size(); i++) {
 
@@ -145,9 +154,10 @@ int main( int argc, char** argv )
     // wait for a key for 1 ms. If 'q' key pressed, quit program
     int keyPressed = waitKey(1);
     if (keyPressed == 'q') {
-      cout << "Quitting..." << endl;
+      ROS_INFO_STREAM("Quitting..." << endl);
       break; 
     }
+    //rate.sleep();
     
   }
 
@@ -155,6 +165,8 @@ int main( int argc, char** argv )
   for(size_t i=0; i < cameras.size(); i++) {
     cameras[i].stopStreaming();
   }
+
+  ROS_INFO("Node: [lumenera_camera_node] has been Ended.");
 
   return 0;
 }
