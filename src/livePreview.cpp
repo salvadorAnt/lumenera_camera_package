@@ -28,7 +28,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <sensor_msgs/Image.h>
 
 #include <lucamapi.h>
 #include <lucamerr.h>
@@ -106,7 +105,14 @@ int main( int argc, char** argv )
   ROS_INFO_STREAM("Starting previews.\nPress 'q' or Control-c to quit." << endl);
 
   // image publisher 
-  ros::Publisher pub = nh.advertise<sensor_msgs::Image>("/lumenera_camera_package_left", 10);
+  // for each camera create an publisher
+  std::vector<ros::Publisher> publishers;
+  for (size_t i = 0; i < cameras.size(); i++) {
+    char topic_name[200];
+    sprintf(topic_name, "/lumenera_camera_package/%d", i + 1);
+    publishers.push_back(nh.advertise<sensor_msgs::Image>(topic_name, 10));
+  }
+
   cv_bridge::CvImage img_bridge;
   sensor_msgs::Image img_msg;
 
@@ -135,7 +141,7 @@ int main( int argc, char** argv )
         header.stamp = ros::Time::now(); // time
         img_bridge = cv_bridge::CvImage(header, sensor_msgs::image_encodings::RGB8, image);
         img_bridge.toImageMsg(img_msg); // from cv_bridge to sensor_msgs::Image
-        pub.publish(img_msg); // ros::Publisher pub_img = node.advertise<sensor_msgs::Image>("topic", queuesize);
+        publishers[i].publish(img_msg); // ros::Publisher pub_img = node.advertise<sensor_msgs::Image>("topic", queuesize);
 
 
         if (displaySobelImage) {
