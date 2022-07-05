@@ -24,6 +24,7 @@
 #undef LUMENERA_MAC_API
 #undef LUMENERA_WINDOWS_API
 
+#include <ros/ros.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -43,6 +44,9 @@ using std::endl;
 
 int main( int argc, char** argv )
 {
+
+  ros::init(argc, argv, "lumenera_camera_node");
+	ros::NodeHandle nh;
 
   BYTE *imagePtr;
   int frameSize;
