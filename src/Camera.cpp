@@ -101,13 +101,7 @@ void Camera::init(int index, const std::string& processing)
     conversionParams.Saturation=1;
   }
   
-  // Create OpenCV windows
-  m_unprocessedWindowName = name();
-    cv::namedWindow( m_unprocessedWindowName, cv::WINDOW_AUTOSIZE ); // Create a window for display.
-  if (processing != "") {
-    m_processedWindowName = name() + " - " + processing;
-    cv::namedWindow(   m_processedWindowName, cv::WINDOW_AUTOSIZE);
-  }
+  
   
 }
 

@@ -1,25 +1,3 @@
-//******************************************************************************
-//
-// Copyright (c) 2019-2020, TELEDYNE LUMENERA, a business unit of TELEDYNE
-// DIGITAL IMAGING, INCORPORATED. All rights reserved.
-//
-// This program is subject to the terms and conditions defined in file 'LICENSE'
-// , which is part of this Linux LuCam SDK package.
-//
-//******************************************************************************
-
-//
-// Provides a live preview of a camera, using OpenCV
-// If you pass a command-line parameter (anything), then a
-// live preview window with a Sobel filter applied will be created
-//
-// Note that this requires that you have g++, and OpenCV installed on your system
-// Brute force way to ensure these are installed is to use:
-// sudo apt-get install g++
-// sudo apt-get install libopencv-*
-//
-
-
 #define LUMENERA_LINUX_API
 #undef LUMENERA_MAC_API
 #undef LUMENERA_WINDOWS_API
@@ -96,13 +74,9 @@ int main( int argc, char** argv )
   }
 
   //
-  // Loop infinitely, or until a 'q' is seen
-  //
   const int scale  = 1;
   const int delta  = 0;
   const int ddepth = CV_16S;
-
-  ROS_INFO_STREAM("Starting previews.\nPress 'q' or Control-c to quit." << endl);
 
   // image publisher 
   // for each camera create an publisher
@@ -133,7 +107,7 @@ int main( int argc, char** argv )
 
         cameras[i].releaseImage(); // release asap
 
-        cvtColor(image, image, CV_BGR2RGB,3);
+        //cvtColor(image, image, CV_BGR2RGB,3);
 
         // publish on ROS topic
         std_msgs::Header header; // empty header
@@ -143,33 +117,6 @@ int main( int argc, char** argv )
         img_bridge.toImageMsg(img_msg); // from cv_bridge to sensor_msgs::Image
         publishers[i].publish(img_msg); // ros::Publisher pub_img = node.advertise<sensor_msgs::Image>("topic", queuesize);
 
-
-        if (displaySobelImage) {
-          GaussianBlur(image, image, Size(3,3), 0, 0, BORDER_DEFAULT);
-        
-          cv::Mat grey;
-          cvtColor(image, grey, CV_BGR2GRAY);
-
-          // Gradient X
-          Mat grad_x;
-          Mat abs_grad_x;
-          Sobel( grey, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
-          convertScaleAbs( grad_x, abs_grad_x );
-          
-          // Gradient Y
-          Mat grad_y;
-          Mat abs_grad_y;
-          Sobel( grey, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
-          convertScaleAbs( grad_y, abs_grad_y );
-
-          // Total Gradient (approximate)
-          Mat grad;
-          addWeighted( abs_grad_x, 0.5, abs_grad_y, 0.5, 0, grad ); 
-        
-          resize( grad,  grad, cameras[i].getDisplaySize());
-          imshow(cameras[i].  processedWindowName(), grad  );
-        }
-        
         // Show the actual image
         //resize(image, image, cameras[i].getDisplaySize());
         //imshow(cameras[i].unprocessedWindowName(), image );
