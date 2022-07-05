@@ -1,5 +1,5 @@
 # Lumenera Camera ROS Package
-ROS package for Lumenera Cameras
+ROS package for Lumenera Cameras.
 
 # How to install it
 - First, download `lucam-sdk` from (Lumenera website)[www.lumenera.com]. Then install it according to the README file that is with it.
@@ -23,4 +23,5 @@ For example, it the following image, I connected to lumenera cameras to my PC an
 ![Lumenera Cameras ROS package](/imgs/demo.png?raw=true)
 
 # NOTICE
+It is not an official ROS package by Lumenera camera or SDK provide.
 I tested it on Ubuntu 18.04 with ROS Melodic. I have not tested it on other environments. Maybe you will be required to do some adjustments.
