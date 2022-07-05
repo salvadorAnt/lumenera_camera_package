@@ -28,6 +28,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <sensor_msgs/Image.h>
 
 #include <lucamapi.h>
 #include <lucamerr.h>
@@ -37,6 +38,9 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
+#include <sensor_msgs/Image.h>
+#include <sensor_msgs/image_encodings.h>
+#include <cv_bridge/cv_bridge.h>
 
 using namespace cv;
 using std::cout;
@@ -56,6 +60,9 @@ int main( int argc, char** argv )
   // print start of node
   ROS_INFO("Node: [lumenera_camera_node] has been started.");
 
+
+  // frame id
+  int frame_id = 0;
 
   BYTE *imagePtr;
   int frameSize;
@@ -98,6 +105,11 @@ int main( int argc, char** argv )
 
   ROS_INFO_STREAM("Starting previews.\nPress 'q' or Control-c to quit." << endl);
 
+  // image publisher 
+  ros::Publisher pub = nh.advertise<sensor_msgs::Image>("/lumenera_camera_package_left", 10);
+  cv_bridge::CvImage img_bridge;
+  sensor_msgs::Image img_msg;
+
   while (ros::ok()) {
     // Grab and display a single image from each camera
     for (size_t i = 0; i < cameras.size(); i++) {
@@ -116,6 +128,15 @@ int main( int argc, char** argv )
         cameras[i].releaseImage(); // release asap
 
         cvtColor(image, image, CV_BGR2RGB,3);
+
+        // publish on ROS topic
+        std_msgs::Header header; // empty header
+        header.seq = frame_id; // user defined counter
+        header.stamp = ros::Time::now(); // time
+        img_bridge = cv_bridge::CvImage(header, sensor_msgs::image_encodings::RGB8, image);
+        img_bridge.toImageMsg(img_msg); // from cv_bridge to sensor_msgs::Image
+        pub.publish(img_msg); // ros::Publisher pub_img = node.advertise<sensor_msgs::Image>("topic", queuesize);
+
 
         if (displaySobelImage) {
           GaussianBlur(image, image, Size(3,3), 0, 0, BORDER_DEFAULT);
@@ -144,19 +165,22 @@ int main( int argc, char** argv )
         }
         
         // Show the actual image
-        resize(image, image, cameras[i].getDisplaySize());
-        imshow(cameras[i].unprocessedWindowName(), image );
+        //resize(image, image, cameras[i].getDisplaySize());
+        //imshow(cameras[i].unprocessedWindowName(), image );
 
       }
       
     }
 
+    // increase frame Id
+    frame_id = frame_id + 1;
+
     // wait for a key for 1 ms. If 'q' key pressed, quit program
-    int keyPressed = waitKey(1);
-    if (keyPressed == 'q') {
-      ROS_INFO_STREAM("Quitting..." << endl);
-      break; 
-    }
+    //int keyPressed = waitKey(1);
+    //if (keyPressed == 'q') {
+    //  ROS_INFO_STREAM("Quitting..." << endl);
+    //  break; 
+    //}
     //rate.sleep();
     
   }
