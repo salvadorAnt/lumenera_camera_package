@@ -1,2 +1,2 @@
-# lumenera_camera_package
+# Lumenera Camera ROS Package
 ROS package for Lumenera Cameras
