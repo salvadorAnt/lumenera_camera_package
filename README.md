@@ -19,8 +19,12 @@ For each camera, it produces one topic with the name `/lumenera_camera_package/i
 
 You can subscribe to topics and use the published images.
 
-For example, it the following image, I connected two lumenera cameras to my PC and I executed the ROS node. It published two topics, one for each camera. The frame rate for each one of the two is near 37.
+For example, in the following image, I connected two lumenera cameras to my PC and I executed the ROS node. It published two topics, one for each camera. The frame rate for each one of the two is near 37.
 ![Lumenera Cameras ROS package](/imgs/demo-0.png?raw=true)
+
+
+Also, in the following image, I connected one lumenera camera to my PC and I executed the ROS node. It published one topic. The frame rate for the camera is near 90 frames per second.
+![Lumenera Cameras ROS package](/imgs/demo-1.png?raw=true)
 
 # NOTICE
 It is not an official ROS package by Lumenera camera or SDK provider.
