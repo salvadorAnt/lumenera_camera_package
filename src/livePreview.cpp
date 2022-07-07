@@ -37,7 +37,7 @@ void publish_camera_on_topic(std::vector<Camera> cameras, const std::vector<ros:
   cv_bridge::CvImage img_bridge;
   sensor_msgs::Image img_msg;
 
-  while (ros::ok()) {
+  while (ros::ok() && ros::master::check()) {
     // Grab and display a single image from each camera
     
     imagePtr = cameras[camera_index].getRawImage();
