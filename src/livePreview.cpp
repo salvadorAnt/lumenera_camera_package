@@ -26,7 +26,7 @@ using std::endl;
 
 void publish_camera_on_topic(std::vector<Camera> cameras, const std::vector<ros::Publisher> publishers, const int camera_index)
 { 
-  ROS_INFO_STREAM( "Start thread for " << camera_index << "." << std::endl);
+  ROS_INFO_STREAM( "Start thread for camera " << camera_index << "." << std::endl);
 
   int frameSize;
   BYTE *imagePtr;
@@ -58,7 +58,7 @@ void publish_camera_on_topic(std::vector<Camera> cameras, const std::vector<ros:
 
       // publish on ROS topic
       std_msgs::Header header; // empty header
-      header.seq = frame_id; // user defined counter
+      header.seq = frame_id; // counter for frame rate
       header.stamp = ros::Time::now(); // time
       img_bridge = cv_bridge::CvImage(header, sensor_msgs::image_encodings::RGB8, image);
       img_bridge.toImageMsg(img_msg); // from cv_bridge to sensor_msgs::Image
@@ -83,20 +83,8 @@ int main( int argc, char** argv )
   // ros node handle
   ros::NodeHandle nh;
 
-  // ros rate Hz
-  ros::Rate rate(90);
-
   // print start of node
   ROS_INFO("Node: [lumenera_camera_node] has been started.");
-
-
-
-  
-  bool displaySobelImage = false;
-  if (argc > 1) {
-    displaySobelImage = true;
-  }
-
 
   int numCameras = LucamNumCameras();
   
@@ -113,7 +101,7 @@ int main( int argc, char** argv )
   // Initialize each camera
   for(size_t i=0; i < cameras.size(); i++) {
     ROS_INFO_STREAM("Initializing Camera #" << i+1 << endl);
-    cameras[i].init(i+1, displaySobelImage ? "Sobel" : "");
+    cameras[i].init(i+1, "");
   }
 
   // Start streaming on each camera
