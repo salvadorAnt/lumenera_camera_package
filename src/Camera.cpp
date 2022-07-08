@@ -1,22 +1,7 @@
-//******************************************************************************
-//
-// Copyright (c) 2019-2020, TELEDYNE LUMENERA, a business unit of TELEDYNE
-// DIGITAL IMAGING, INCORPORATED. All rights reserved.
-//
-// This program is subject to the terms and conditions defined in file 'LICENSE'
-// , which is part of this Linux LuCam SDK package.
-//
-//******************************************************************************
-
 #define LUMENERA_LINUX_API
 #undef LUMENERA_MAC_API
 #undef LUMENERA_WINDOWS_API
 
-
-//
-// A simple OpenCV application which shows how to stream a 
-// live image and a processed version of that same image.
-//
 #include "Camera.h"
 #include <stdio.h>
 #include <fstream>
@@ -35,9 +20,7 @@ Camera::Camera() :
   hCamera(NULL),
   targetIntensity(0),
   streaming(false),
-  rgbImageOwnerIsProducer(true),
-  width(0),
-  height(0)
+  rgbImageOwnerIsProducer(true)
 {
 }
 
@@ -76,10 +59,6 @@ void Camera::init(int index, const std::string& processing)
 
   imageFormat.Size = sizeof(LUCAM_IMAGE_FORMAT);
   LucamGetVideoImageFormat(hCamera, &imageFormat);
-  width = 640;
-  float factor =(float)imageFormat.Height/(float)imageFormat.Width;
-  factor *= width;
-  height = factor ;
   
   LucamOneShotAutoWhiteBalance(hCamera, 0, 0, imageFormat.Width, imageFormat.Height);
   LucamDigitalWhiteBalance(hCamera, 0, 0, imageFormat.Width, imageFormat.Height);
@@ -153,12 +132,6 @@ int Camera::getFrameSize()
   return imageFormat.ImageSize;
 }
 
-cv::Size Camera::getDisplaySize()
-{
-  cv::Size s(width, height);
-  return s;
-}
-
 std::string Camera::name() const
 {
   if (cameraIndex >= 1) {
@@ -203,5 +176,3 @@ void Camera::createRGBImage(const BYTE* raw, const int length)
   rgbImageOwnerIsProducer = false;
 
 }
-
-

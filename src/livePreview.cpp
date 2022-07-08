@@ -118,7 +118,7 @@ int main( int argc, char** argv )
   // image publisher 
   // for each camera create an publisher
   std::vector<ros::Publisher> publishers;
-  for (size_t i = 0; i < cameras.size(); i++) {
+  for (int i = 0; i < cameras.size(); i++) {
     char topic_name[200];
     sprintf(topic_name, "/lumenera_camera_package/%d", i + 1);
     publishers.push_back(nh.advertise<sensor_msgs::Image>(topic_name, 10));

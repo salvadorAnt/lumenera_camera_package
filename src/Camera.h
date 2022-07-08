@@ -1,13 +1,3 @@
-//******************************************************************************
-//
-// Copyright (c) 2019-2020, TELEDYNE LUMENERA, a business unit of TELEDYNE
-// DIGITAL IMAGING, INCORPORATED. All rights reserved.
-//
-// This program is subject to the terms and conditions defined in file 'LICENSE'
-// , which is part of this Linux LuCam SDK package.
-//
-//******************************************************************************
-
 #ifndef OPENCV_SOBEL_CAMERA_H
 #define OPENCV_SOBEL_CAMERA_H
 
@@ -56,36 +46,11 @@ protected:
         LUCAM_IMAGE_FORMAT imageFormat;
 
         bool streaming;
-        int  width;
-        int  height;
         int targetIntensity;
 
         std::string m_unprocessedWindowName;
         std::string   m_processedWindowName;
 
-        //
-        // We'll use a variation on Peterson's algorithm to control access to the rgbImage.
-        //
-        // The producer (the callback) can only write into the buffer if it's the owner
-        // The consumer (the thread reading and displaying images) can only access the buffer if it's the owner
-        // i.e. the producer is now the owner
-        //
-        // Producer
-        //   if (!ownerIsProducer) return;
-        //   // write image data to rgbImage
-        //   ownerIsProducer = false;
-        //
-        // Consumer - Get Image
-        //   if (ownerIsProducer) return
-        //   // Allowed to access data
-        // 
-        // Consumer - Release Image
-        //   assert(!ownerIsProducer);
-        //   ownerIsProducer = true
-        //
-        // This works iff there are two threads involved.
-        // One producer thread, one consumer thread.
-        //
         std::vector<unsigned char> rgbImage;
         std::vector<unsigned char> rawImage;
         volatile bool rgbImageOwnerIsProducer;
